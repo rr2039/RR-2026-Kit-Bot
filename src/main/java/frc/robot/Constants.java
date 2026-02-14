@@ -47,6 +47,19 @@ public final class Constants {
     public static final double SPIN_UP_SECONDS = 1;
   }
 
+
+  //UPDATE THESE DURING TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  public static final class ClimbConstants{
+    public static final int CLIMB_MOTOR_ID = 13;
+
+    public static final int CLIMB_MOTOR_CURRENT_LIMIT = 60;
+
+    public static final double CLIMB_RAISE_VOLTAGE = 2;
+    public static final double CLIMB_LOWER_VOLTAGE = -2;
+
+    public static final double LOWER_SECONDS = 2;
+  }
+
   public static final class OperatorConstants {
     // Port constants for driver and operator controllers. These should match the
     // values in the Joystick tab of the Driver Station software
