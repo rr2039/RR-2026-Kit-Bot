@@ -6,28 +6,27 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CANFuelSubsystem;
-import static frc.robot.Constants.FuelConstants.*;
+import frc.robot.subsystems.CANClimbSubsystem;
+import static frc.robot.Constants.ClimbConstants.*;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Launch extends Command {
+public class LowerClimb extends Command {
   /** Creates a new Intake. */
 
-  CANFuelSubsystem fuelSubsystem;
+  CANClimbSubsystem climbSubsystem;
 
-  public Launch(CANFuelSubsystem fuelSystem) {
-    addRequirements(fuelSystem);
-    this.fuelSubsystem = fuelSystem;
+  public LowerClimb(CANClimbSubsystem climbSubsystem) {
+    addRequirements(climbSubsystem);
+    this.climbSubsystem = climbSubsystem;
   }
 
   // Called when the command is initially scheduled. Set the rollers to the
   // appropriate values for intaking
   @Override
   public void initialize() {
-    fuelSubsystem
-        .setIntakeLauncherRoller(
-            SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE));
-    fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Launching feeder roller value", LAUNCHING_FEEDER_VOLTAGE));
+    climbSubsystem
+        .lowerClimb(
+            SmartDashboard.getNumber("Lower Climb Voltage", CLIMB_LOWER_VOLTAGE));
   }
 
   // Called every time the scheduler runs while the command is scheduled. This

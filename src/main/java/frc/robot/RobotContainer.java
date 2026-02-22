@@ -4,16 +4,22 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.OperatorConstants.DRIVER_CONTROLLER_PORT;
+import static frc.robot.Constants.OperatorConstants.OPERATOR_CONTROLLER_PORT;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import static frc.robot.Constants.OperatorConstants.*;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
+import frc.robot.commands.HoldClimb;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LaunchSequence;
+import frc.robot.commands.LowerClimb;
+import frc.robot.commands.RaiseClimb;
+import frc.robot.subsystems.CANClimbSubsystem;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
 
@@ -28,6 +34,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
+  private final CANClimbSubsystem climbSubsystem = new CANClimbSubsystem();
 
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
@@ -74,6 +81,11 @@ public class RobotContainer {
     // the intake
     operatorController.a().whileTrue(new Eject(fuelSubsystem));
 
+    operatorController.povUp().whileTrue(new RaiseClimb(climbSubsystem));
+    operatorController.povUp().toggleOnFalse(new HoldClimb(climbSubsystem));
+    operatorController.povDown().whileTrue(new LowerClimb(climbSubsystem));
+    operatorController.povDown().toggleOnFalse(new HoldClimb(climbSubsystem));
+    
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the
@@ -82,6 +94,8 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController));
 
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
+
+    //climbSubsystem.setDefaultCommand(new HoldClimb(climbSubsystem));
   }
 
   /**
