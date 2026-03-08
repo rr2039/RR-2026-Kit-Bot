@@ -14,9 +14,9 @@ public class Launch extends Command {
   /** Creates a new Intake. */
 
   CANFuelSubsystem fuelSubsystem;
-  float power;
+  double power;
 
-  public Launch(CANFuelSubsystem fuelSystem, float power) {
+  public Launch(CANFuelSubsystem fuelSystem, double power) {
     addRequirements(fuelSystem);
     this.fuelSubsystem = fuelSystem;
     this.power = power; 
