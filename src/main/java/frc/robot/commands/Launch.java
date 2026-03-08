@@ -14,17 +14,19 @@ public class Launch extends Command {
   /** Creates a new Intake. */
 
   CANFuelSubsystem fuelSubsystem;
+  float power;
 
-  public Launch(CANFuelSubsystem fuelSystem) {
+  public Launch(CANFuelSubsystem fuelSystem, float power) {
     addRequirements(fuelSystem);
     this.fuelSubsystem = fuelSystem;
+    this.power = power; 
   }
 
   // Called when the command is initially scheduled. Set the rollers to the
   // appropriate values for intaking
   @Override
   public void initialize() {
-    fuelSubsystem.setIntakeLauncherRoller(SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE));
+    fuelSubsystem.setIntakeLauncherRoller(power);
     fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Launching feeder roller value", LAUNCHING_FEEDER_VOLTAGE));
   }
 
