@@ -81,7 +81,7 @@ public class RobotContainer {
     // the intake
     operatorController.a().whileTrue(new Eject(fuelSubsystem));
 
-    operatorController.x().whileTrue(new LaunchSequence(fuelSubsystem, -0.85));
+    operatorController.x().whileTrue(new LaunchSequence(fuelSubsystem, -0.80));
     
     operatorController.povUp().whileTrue(new RaiseClimb(climbSubsystem));
     operatorController.povUp().toggleOnFalse(new HoldClimb(climbSubsystem));
