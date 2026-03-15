@@ -59,9 +59,9 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    NamedCommands.registerCommand("Forward", new DriveAuto(driveSubsystem, 0.5, 0.0).withTimeout(0.25));
-    NamedCommands.registerCommand("Forward1", new DriveAuto(driveSubsystem, 0.5, 0.0).withTimeout(1));
-    NamedCommands.registerCommand("Shoot", new LaunchSequence(fuelSubsystem, -0.8).withTimeout(5));
+    NamedCommands.registerCommand("Forward", new DriveAuto(driveSubsystem, 0.5, 0.0).withTimeout(0.0));
+    NamedCommands.registerCommand("Forward1", new DriveAuto(driveSubsystem, 0.6, 0.0).withTimeout(1.5));
+    NamedCommands.registerCommand("Shoot", new LaunchSequence(fuelSubsystem, -0.8).withTimeout(4));
     NamedCommands.registerCommand("Stop", new DriveAuto(driveSubsystem, 0.0, 0.0) );
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
