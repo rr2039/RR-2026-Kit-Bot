@@ -19,14 +19,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Drive;
 import frc.robot.commands.DriveAuto;
 import frc.robot.commands.Eject;
-import frc.robot.commands.HoldClimb;
-import frc.robot.commands.HoldLClimb;
-import frc.robot.commands.HoldRClimb;
+
 import frc.robot.commands.Intake;
 import frc.robot.commands.LaunchSequence;
-import frc.robot.commands.LowerClimb;
-import frc.robot.commands.RaiseClimb;
-import frc.robot.subsystems.CANClimbSubsystem;
+
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
 
@@ -41,8 +37,6 @@ public class RobotContainer {
   // The robot's subsystems
   private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
-  private final CANClimbSubsystem climbSubsystem = new CANClimbSubsystem();
-
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
       DRIVER_CONTROLLER_PORT);
@@ -94,15 +88,10 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(new LaunchSequence(fuelSubsystem,-1.0));
     // While the A button is held on the operator controller, eject fuel back out
     // the intake
-    operatorController.a().toggleOnTrue(new HoldRClimb(climbSubsystem));
-    operatorController.b().toggleOnTrue(new HoldLClimb(climbSubsystem));
+  
 
     operatorController.x().whileTrue(new LaunchSequence(fuelSubsystem, -0.80));
-    operatorController.povUp().whileTrue(new RaiseClimb(climbSubsystem));
-    operatorController.povUp().toggleOnFalse(new HoldClimb(climbSubsystem));
-    operatorController.povDown().whileTrue(new LowerClimb(climbSubsystem));
-    operatorController.povDown().toggleOnFalse(new HoldClimb(climbSubsystem));
-    
+   
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the
@@ -113,7 +102,6 @@ public class RobotContainer {
 
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
 
-    climbSubsystem.setDefaultCommand(new HoldClimb(climbSubsystem));
   }
 
   /**
