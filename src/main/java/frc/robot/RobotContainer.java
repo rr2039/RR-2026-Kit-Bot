@@ -6,6 +6,9 @@ package frc.robot;
 
 import static frc.robot.Constants.OperatorConstants.DRIVER_CONTROLLER_PORT;
 import static frc.robot.Constants.OperatorConstants.OPERATOR_CONTROLLER_PORT;
+
+import java.io.OutputStreamWriter;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,6 +20,8 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.DriveAuto;
 import frc.robot.commands.Eject;
 import frc.robot.commands.HoldClimb;
+import frc.robot.commands.HoldLClimb;
+import frc.robot.commands.HoldRClimb;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LaunchSequence;
 import frc.robot.commands.LowerClimb;
@@ -59,9 +64,11 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    NamedCommands.registerCommand("Forward", new DriveAuto(driveSubsystem, 0.5, 0.0).withTimeout(0.0));
+    NamedCommands.registerCommand("Forward", new DriveAuto(driveSubsystem, 0.5, 0.0).withTimeout(0));
     NamedCommands.registerCommand("Forward1", new DriveAuto(driveSubsystem, 0.6, 0.0).withTimeout(1.5));
-    NamedCommands.registerCommand("Shoot", new LaunchSequence(fuelSubsystem, -0.8).withTimeout(4));
+    NamedCommands.registerCommand("TurnPos", new DriveAuto(driveSubsystem, 0.0, 0.3).withTimeout(0.5));
+    NamedCommands.registerCommand("TurnNeg", new DriveAuto(driveSubsystem, 0.0, -0.3).withTimeout(0.5));
+    NamedCommands.registerCommand("Shoot", new LaunchSequence(fuelSubsystem, -0.75).withTimeout(4));
     NamedCommands.registerCommand("Stop", new DriveAuto(driveSubsystem, 0.0, 0.0) );
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -87,10 +94,10 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(new LaunchSequence(fuelSubsystem,-1.0));
     // While the A button is held on the operator controller, eject fuel back out
     // the intake
-    operatorController.a().whileTrue(new Eject(fuelSubsystem));
+    operatorController.a().toggleOnTrue(new HoldRClimb(climbSubsystem));
+    operatorController.b().toggleOnTrue(new HoldLClimb(climbSubsystem));
 
-     operatorController.x().whileTrue(new LaunchSequence(fuelSubsystem, -0.80));
-
+    operatorController.x().whileTrue(new LaunchSequence(fuelSubsystem, -0.80));
     operatorController.povUp().whileTrue(new RaiseClimb(climbSubsystem));
     operatorController.povUp().toggleOnFalse(new HoldClimb(climbSubsystem));
     operatorController.povDown().whileTrue(new LowerClimb(climbSubsystem));
@@ -101,11 +108,12 @@ public class RobotContainer {
     // controller. The Y axis of the controller is inverted so that pushing the
     // stick away from you (a negative value) drives the robot forwards (a positive
     // value)
-    driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController));
+    driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController,operatorController));
+
 
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
 
-    //climbSubsystem.setDefaultCommand(new HoldClimb(climbSubsystem));
+    climbSubsystem.setDefaultCommand(new HoldClimb(climbSubsystem));
   }
 
   /**

@@ -83,7 +83,9 @@ public final class Constants {
     public static final int CLIMB_MOTOR_CURRENT_LIMIT = 60;
 
     public static final double CLIMB_RAISE_VOLTAGE = 8;
+    public static final double CLIMB_HOLDR_VOLTAGE = 2;
     public static final double CLIMB_LOWER_VOLTAGE = -8;
+     public static final double CLIMB_HOLDL_VOLTAGE = -2;
 
     public static final double LOWER_SECONDS = 1;
   }
@@ -96,7 +98,7 @@ public final class Constants {
 
     // This value is multiplied by the joystick value when rotating the robot to
     // help avoid turning too fast and beign difficult to control
-    public static final double DRIVE_SCALING = .7;
+    public static final double DRIVE_SCALING = 0.8;
     public static final double ROTATION_SCALING = .8;
   }
 }
