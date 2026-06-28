@@ -24,9 +24,8 @@ public class SpinUp extends Command {
   // appropriate values for intaking
   @Override
   public void initialize() {
-    fuelSubsystem
-        .setIntakeLauncherRoller(-0.25);
-    fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Launching spin-up feeder value", SPIN_UP_FEEDER_VOLTAGE));
+    fuelSubsystem.setIntakeLauncherRoller(-0.25);
+    fuelSubsystem.setFeederRoller(0.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled. This
