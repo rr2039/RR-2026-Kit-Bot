@@ -9,13 +9,17 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.FuelConstants.*;
 
 public class CANFuelSubsystem extends SubsystemBase {
-  private final SparkMax feederRoller;
+  private final TalonFX feederRoller;
   private final TalonFX intakeLauncherRoller;
 
   /** Creates a new CANBallSubsystem. */
@@ -23,21 +27,22 @@ public class CANFuelSubsystem extends SubsystemBase {
   public CANFuelSubsystem() {
     // create brushed motors for each of the motors on the launcher mechanism
     intakeLauncherRoller = new TalonFX(INTAKE_LAUNCHER_MOTOR_ID);
-    feederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushed);
+    feederRoller = new TalonFX(FEEDER_MOTOR_ID);
+    // in init function, set slot 0 gains
+    var slot0Configs = new Slot0Configs();
+    slot0Configs.kS = 0.1; // Add 0.1 V output to overcome static friction
+    slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kP = 0.11; // An error of 1 rps results in 0.11 V output
+    slot0Configs.kI = 0; // no output for integrated error
+    slot0Configs.kD = 0; // no output for error derivative
+    
+    intakeLauncherRoller.getConfigurator().apply(slot0Configs);
+    
 
     // create the configuration for the feeder roller, set a current limit and apply
     // the config to the controller
-    SparkMaxConfig feederConfig = new SparkMaxConfig();
-    feederConfig.smartCurrentLimit(FEEDER_MOTOR_CURRENT_LIMIT);
-    feederRoller.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
 
-    // create the configuration for the launcher roller, set a current limit, set
-    // the motor to inverted so that positive values are used for both intaking and
-    // launching, and apply the config to the controller
-    SparkMaxConfig launcherConfig = new SparkMaxConfig();
-    launcherConfig.inverted(true);
-    launcherConfig.smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT);
-    intakeLauncherRoller.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // put default values for various fuel operations onto the dashboard
     // all commands using this subsystem pull values from the dashbaord to allow
@@ -51,19 +56,30 @@ public class CANFuelSubsystem extends SubsystemBase {
   }
 
   // A method to set the voltage of the intake roller
-  public void setIntakeLauncherRoller(double voltage) {
-    intakeLauncherRoller.set(voltage);
+  public void setIntakeLauncherRoller(double velocity) {
+    // create a velocity closed-loop request, voltage output, slot 0 configs
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+
+    // set velocity to 8 rps, add 0.5 V to overcome gravity
+    intakeLauncherRoller.setControl(m_request.withVelocity(velocity).withFeedForward(0.5));
   }
 
   // A method to set the voltage of the intake roller
   public void setFeederRoller(double voltage) {
-    feederRoller.set(voltage);
+    final DutyCycleOut m_rightRequest = new DutyCycleOut(0.0);
+    feederRoller.setControl(m_rightRequest.withOutput(voltage));
+
   }
 
   // A method to stop the rollers
   public void stop() {
-    feederRoller.set(0);
-    intakeLauncherRoller.set(0);
+    final DutyCycleOut m_rightRequest = new DutyCycleOut(0.0);
+    feederRoller.setControl(m_rightRequest.withOutput(0));
+
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+
+    intakeLauncherRoller.setControl(m_request.withVelocity(0).withFeedForward(0));
+
   }
 
   @Override
