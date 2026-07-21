@@ -24,8 +24,8 @@ public class Intake extends Command {
   // appropriate values for intaking
   @Override
   public void initialize() {
-    fuelSubsystem.setIntakeLauncherRoller(-0.5);
-    fuelSubsystem.setFeederRoller(0.5);
+    //fuelSubsystem.setIntakeLauncherRoller(5);
+    fuelSubsystem.setFeederRoller(-20);
   }
 
   // Called every time the scheduler runs while the command is scheduled. This
@@ -37,8 +37,6 @@ public class Intake extends Command {
   // Called once the command ends or is interrupted. Stop the rollers
   @Override
   public void end(boolean interrupted) {
-    fuelSubsystem.setIntakeLauncherRoller(0);
-    fuelSubsystem.setFeederRoller(0);
   }
 
   // Returns true when the command should end.

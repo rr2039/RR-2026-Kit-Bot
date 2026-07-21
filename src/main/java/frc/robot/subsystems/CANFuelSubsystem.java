@@ -30,13 +30,21 @@ public class CANFuelSubsystem extends SubsystemBase {
     feederRoller = new TalonFX(FEEDER_MOTOR_ID);
     // in init function, set slot 0 gains
     var slot0Configs = new Slot0Configs();
-    slot0Configs.kS = 0.1; // Add 0.1 V output to overcome static friction
-    slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kP = 0.11; // An error of 1 rps results in 0.11 V output
+    slot0Configs.kS = 0; // Add 0.1 V output to overcome static friction
+    slot0Configs.kV = 0; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kP = 1; // An error of 1 rps results in 0.7 V output
     slot0Configs.kI = 0; // no output for integrated error
     slot0Configs.kD = 0; // no output for error derivative
+
+    var fslot0Configs = new Slot0Configs();
+    fslot0Configs.kS = 0; // Add 0.1 V output to overcome static friction
+    fslot0Configs.kV = 0; // A velocity target of 1 rps results in 0.12 V output
+    fslot0Configs.kP = 1; // An error of 1 rps results in 0.7 V output
+    fslot0Configs.kI = 0; // no output for integrated error
+    fslot0Configs.kD = 0; // no output for error derivative
     
     intakeLauncherRoller.getConfigurator().apply(slot0Configs);
+    feederRoller.getConfigurator().apply(fslot0Configs);
     
 
     // create the configuration for the feeder roller, set a current limit and apply
@@ -61,24 +69,26 @@ public class CANFuelSubsystem extends SubsystemBase {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
     // set velocity to 8 rps, add 0.5 V to overcome gravity
-    intakeLauncherRoller.setControl(m_request.withVelocity(velocity).withFeedForward(0.5));
+    intakeLauncherRoller.setControl(m_request.withVelocity(velocity).withFeedForward(0));
   }
 
   // A method to set the voltage of the intake roller
-  public void setFeederRoller(double voltage) {
-    final DutyCycleOut m_rightRequest = new DutyCycleOut(0.0);
-    feederRoller.setControl(m_rightRequest.withOutput(voltage));
+  public void setFeederRoller(double velocity) {
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+
+    // set velocity to 8 rps, add 0.5 V to overcome gravity
+    feederRoller.setControl(m_request.withVelocity(velocity).withFeedForward(0));
 
   }
 
   // A method to stop the rollers
   public void stop() {
-    final DutyCycleOut m_rightRequest = new DutyCycleOut(0.0);
-    feederRoller.setControl(m_rightRequest.withOutput(0));
-
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
     intakeLauncherRoller.setControl(m_request.withVelocity(0).withFeedForward(0));
+    intakeLauncherRoller.stopMotor();
+    feederRoller.setControl(m_request.withVelocity(0).withFeedForward(0));
+    feederRoller.stopMotor();
 
   }
 

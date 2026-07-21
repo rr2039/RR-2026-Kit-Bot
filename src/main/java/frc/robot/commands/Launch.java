@@ -14,20 +14,20 @@ public class Launch extends Command {
   /** Creates a new Intake. */
 
   CANFuelSubsystem fuelSubsystem;
-  double power;
+  double velocity;
 
-  public Launch(CANFuelSubsystem fuelSystem, double power) {
+  public Launch(CANFuelSubsystem fuelSystem, double velocity) {
     addRequirements(fuelSystem);
     this.fuelSubsystem = fuelSystem;
-    this.power = power; 
+    this.velocity = velocity; 
   }
 
   // Called when the command is initially scheduled. Set the rollers to the
   // appropriate values for intaking
   @Override
   public void initialize() {
-    fuelSubsystem.setIntakeLauncherRoller(power);
-    fuelSubsystem.setFeederRoller(0.5);
+    fuelSubsystem.setIntakeLauncherRoller(velocity);
+    fuelSubsystem.setFeederRoller(-10);
   }
 
   // Called every time the scheduler runs while the command is scheduled. This
