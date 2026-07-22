@@ -25,21 +25,29 @@ public class CANFuelSubsystem extends SubsystemBase {
   /** Creates a new CANBallSubsystem. */
   @SuppressWarnings("removal")
   public CANFuelSubsystem() {
+
+    SmartDashboard.putNumber("Intaking feeder roller value", INTAKING_FEEDER_VOLTAGE);
+    SmartDashboard.putNumber("Intaking intake roller value", INTAKING_INTAKE_VOLTAGE);
+    SmartDashboard.putNumber("Launching feeder roller value", LAUNCHING_FEEDER_VOLTAGE);
+    SmartDashboard.putNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE);
+    SmartDashboard.putNumber("Spin-up feeder roller value", SPIN_UP_FEEDER_VOLTAGE);
+    SmartDashboard.putNumber("roller KP", Roller_KP);
+
     // create brushed motors for each of the motors on the launcher mechanism
     intakeLauncherRoller = new TalonFX(INTAKE_LAUNCHER_MOTOR_ID);
     feederRoller = new TalonFX(FEEDER_MOTOR_ID);
     // in init function, set slot 0 gains
     var slot0Configs = new Slot0Configs();
     slot0Configs.kS = 0; // Add 0.1 V output to overcome static friction
-    slot0Configs.kV = 0; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kP = 1; // An error of 1 rps results in 0.7 V output
+    slot0Configs.kV = 10; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kP = 10; // An error of 1 rps results in 0.7 V output
     slot0Configs.kI = 0; // no output for integrated error
     slot0Configs.kD = 0; // no output for error derivative
 
     var fslot0Configs = new Slot0Configs();
-    fslot0Configs.kS = 0; // Add 0.1 V output to overcome static friction
+    fslot0Configs.kS = 0; // Add 0.1 V output to overcome st         atic friction
     fslot0Configs.kV = 0; // A velocity target of 1 rps results in 0.12 V output
-    fslot0Configs.kP = 1; // An error of 1 rps results in 0.7 V output
+    fslot0Configs.kP = 4; // An error of 1 rps results in 0.7 V output
     fslot0Configs.kI = 0; // no output for integrated error
     fslot0Configs.kD = 0; // no output for error derivative
     
@@ -56,11 +64,7 @@ public class CANFuelSubsystem extends SubsystemBase {
     // all commands using this subsystem pull values from the dashbaord to allow
     // you to tune the values easily, and then replace the values in Constants.java
     // with your new values. For more information, see the Software Guide.
-    SmartDashboard.putNumber("Intaking feeder roller value", INTAKING_FEEDER_VOLTAGE);
-    SmartDashboard.putNumber("Intaking intake roller value", INTAKING_INTAKE_VOLTAGE);
-    SmartDashboard.putNumber("Launching feeder roller value", LAUNCHING_FEEDER_VOLTAGE);
-    SmartDashboard.putNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE);
-    SmartDashboard.putNumber("Spin-up feeder roller value", SPIN_UP_FEEDER_VOLTAGE);
+
   }
 
   // A method to set the voltage of the intake roller
@@ -70,6 +74,7 @@ public class CANFuelSubsystem extends SubsystemBase {
 
     // set velocity to 8 rps, add 0.5 V to overcome gravity
     intakeLauncherRoller.setControl(m_request.withVelocity(velocity).withFeedForward(0));
+    intakeLauncherRoller.setVoltage(velocity);
   }
 
   // A method to set the voltage of the intake roller

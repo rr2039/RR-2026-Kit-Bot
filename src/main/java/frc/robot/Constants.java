@@ -73,6 +73,9 @@ public final class Constants {
     public static final double LAUNCHING_LAUNCHER_VOLTAGE = 12;
     public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
     public static final double SPIN_UP_SECONDS = 0.5;
+
+    public static final double Roller_KP = 1;
+
   }
 
 

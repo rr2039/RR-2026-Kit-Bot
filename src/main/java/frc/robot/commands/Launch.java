@@ -27,7 +27,8 @@ public class Launch extends Command {
   @Override
   public void initialize() {
     fuelSubsystem.setIntakeLauncherRoller(velocity);
-    fuelSubsystem.setFeederRoller(-10);
+    fuelSubsystem.setFeederRoller(20);
+    fuelSubsystem.setNewMotorAgain(-1);
   }
 
   // Called every time the scheduler runs while the command is scheduled. This

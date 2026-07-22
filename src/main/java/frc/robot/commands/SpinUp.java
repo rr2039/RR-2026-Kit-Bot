@@ -24,7 +24,7 @@ public class SpinUp extends Command {
   // appropriate values for intaking
   @Override
   public void initialize() {
-    fuelSubsystem.setIntakeLauncherRoller(5);
+    fuelSubsystem.setIntakeLauncherRoller(-100);
     fuelSubsystem.setFeederRoller(-5);
   }
 
